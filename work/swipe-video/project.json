@@ -1,0 +1,13 @@
+{
+    "name": "短视频小助手",
+    "main": "main.js",
+    "ignore": [
+        "build"
+    ],
+    "launchConfig": {
+        "hideLogs": true
+    },
+    "packageName": "com.yingzi.video",
+    "versionName": "1.0.0",
+    "versionCode": 0
+}
