@@ -1,7 +1,9 @@
 'ui';
 
 // 开发使用
-const common = require("/storage/emulated/0/脚本/common/common.js");
+// const common = require("/storage/emulated/0/脚本/common/common.js");
+// 打包使用
+const common = require("../common/common.js");
 
 let storage = storages.create('swipe-video-globalConfig');
 // 全局配置
@@ -221,10 +223,6 @@ ui.overlayService.on('check', function (checked) {
     toastLog('已关闭悬浮窗权限');
   }
 });
-
-// ui.启动APP后几秒后开始执行.on('click', function () {
-//   this.focusable=true
-// })
 
 ui.启动APP后几秒后开始执行.addTextChangedListener(new android.text.TextWatcher({
   onTextChanged: (value, start, before, intcount) => {
