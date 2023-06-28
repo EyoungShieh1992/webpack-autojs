@@ -102,10 +102,13 @@ ui.layout(
                   <vertical padding="10 8" h="auto" w="0" layout_weight="1">
                     <text text="请选择要刷的APP" textColor="{{ globalConfig.cardColor }}" textSize="14sp" maxLines="1" />
                     <radiogroup id="刷短视频APP列表">
-                      <radio text="抖音" id="douyin" w="*" />
-                      <radio text="抖音极速版" id="douyin_jisuban" w="*" checked="true" />
-                      <radio text="快手" id="kuaishou" w="*" />
-                      <radio text="快手极速版" id="kuaishou_jisuban" w="*" />
+                      {/* <radio text="抖音" id="douyin" w="*" /> */}
+                      <radio text="抖音极速版" id="抖音极速版" w="*" checked="true" />
+                      {/* <radio text="快手" id="kuaishou" w="*" /> */}
+                      <radio text="快手极速版" id="快手极速版" w="*" />
+                      <radio text="百度极速版" id="百度极速版" w="*" />
+                      <radio text="今日头条极速版" id="今日头条极速版" w="*" />
+                      <radio text="UC浏览器极速版" id="UC浏览器极速版" w="*" />
                     </radiogroup>
                   </vertical>
                 </horizontal>
@@ -249,17 +252,31 @@ ui.刷短视频开始运行.on('click', function () {
   }
 
   switch (selectApp) {
-    case '抖音':
-      common.openApp('com.ss.android.ugc.aweme')
-      break;
+    // case '抖音':
+    //   common.openApp('com.ss.android.ugc.aweme')
+    //   break;
     case '抖音极速版':
       common.openApp('抖音极速版')
+      threads.start(function () {
+        text("首页").waitFor();
+        text('首页').findOne().parent().parent().parent().parent().click()
+        text('推荐').findOne().parent().click()
+      })
       break;
-    case '快手':
-      common.openApp('快手')
-      break;
+    // case '快手':
+    //   common.openApp('快手')
+    //   break;
     case '快手极速版':
       common.openApp('快手极速版')
+      break;
+    case '百度极速版':
+      common.openApp('百度极速版')
+      break;
+    case '今日头条极速版':
+      common.openApp('今日头条极速版')
+      break;
+    case 'UC浏览器极速版':
+      common.openApp('UC浏览器极速版')
       break;
   }
 
@@ -275,6 +292,49 @@ ui.刷短视频开始运行.on('click', function () {
     while (true) {
       common.swipeRandom(device.width / 2, device.height - 200, 100, 100, 200)
       common.waitTime(globalConfig.swipeVideoTime, globalConfig.swipeVideoTime + "秒后切换下个视频")
+    }
+  });
+
+  threads.start(function () { // 关闭一些
+    //在新线程执行的代码
+    while (true) {
+      // [抖音极速版]关闭个人信息保护指引
+      if (text("同意").exists()) {
+        console.log('关闭个人信息保护指引')
+        text('同意').findOne().click()
+      }
+      // [抖音极速版]关闭新人现金红包弹窗
+      if (id('dsa').exists()) {
+        console.log('关闭新人现金红包')
+        id('dsa').findOne().click()
+      }
+      // [抖音极速版]关闭青少年模式弹窗
+      if (text("我知道了").exists()) {
+        console.log('关闭青少年模式')
+        text('我知道了').findOne().click()
+      }
+      // [抖音极速版]关闭发现通讯录朋友
+      if (text("发现通讯录朋友").exists()) {
+        console.log('关闭发现通讯录朋友')
+        text('拒绝').findOne().click()
+      }
+      // [抖音极速版]关闭邀请新朋友得现金
+      if (desc("不感兴趣").exists()) {
+        console.log('关闭邀请新朋友得现金')
+        desc('不感兴趣').findOne().click()
+      }
+      // [抖音极速版]关闭邀请新朋友得现金
+      if (id("close").exists()) {
+        console.log('关闭弹窗')
+        id("close").findOne().click()
+      }
+      // [抖音极速版]移除朋友推荐
+      if (text("移除").exists()) {
+        console.log('移除朋友推荐')
+        text("移除").findOne().click()
+      }
+
+      sleep(2000)
     }
   });
 
