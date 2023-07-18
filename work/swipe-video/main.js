@@ -104,9 +104,7 @@ ui.layout(
                   <vertical padding="10 8" h="auto" w="0" layout_weight="1">
                     <text text="请选择要刷的APP" textColor="{{ globalConfig.cardColor }}" textSize="14sp" maxLines="1" />
                     <radiogroup id="刷短视频APP列表">
-                      {/* <radio text="抖音" id="douyin" w="*" /> */}
                       <radio text="抖音极速版" id="抖音极速版" w="*" checked="true" />
-                      {/* <radio text="快手" id="kuaishou" w="*" /> */}
                       <radio text="快手极速版" id="快手极速版" w="*" />
                       <radio text="百度极速版" id="百度极速版" w="*" />
                       <radio text="今日头条极速版" id="今日头条极速版" w="*" />
@@ -249,32 +247,28 @@ ui.刷短视频开始运行.on('click', function () {
     return;
   }
 
+  const timeout = 2000;
   switch (selectApp) {
     // case '抖音':
     //   common.openApp('com.ss.android.ugc.aweme')
     //   break;
     case '抖音极速版':
-      common.openApp('抖音极速版')
-      threads.start(function () {
-        text("首页").waitFor();
-        text('首页').findOne().parent().parent().parent().parent().click()
-        text('推荐').findOne().parent().click()
-      })
+      start_抖音极速版(timeout)
       break;
     // case '快手':
     //   common.openApp('快手')
     //   break;
     case '快手极速版':
-      common.openApp('快手极速版')
+      start_快手极速版(timeout)
       break;
     case '百度极速版':
-      common.openApp('百度极速版')
+      start_百度极速版(timeout)
       break;
     case '今日头条极速版':
-      common.openApp('今日头条极速版')
+      start_今日头条极速版(timeout)
       break;
     case 'UC浏览器极速版':
-      common.openApp('UC浏览器极速版')
+      start_UC浏览器极速版(timeout)
       break;
   }
 
@@ -288,54 +282,11 @@ ui.刷短视频开始运行.on('click', function () {
 
     //在新线程执行的代码
     while (true) {
-      common.swipeRandom(device.width / 2, device.height - 200, 100, 100, 200)
+      // common.swipeRandom(device.width / 2, device.height - 200, 100, 100, 200)
+      common.swipeRandom(device.width / 2, device.height - 250, 100, 0, 500)
       common.waitTime(globalConfig.swipeVideoTime, globalConfig.swipeVideoTime + "秒后切换下个视频")
     }
   });
-
-  threads.start(function () { // 关闭一些
-    //在新线程执行的代码
-    while (true) {
-      // [抖音极速版]关闭个人信息保护指引
-      if (text("同意").exists()) {
-        console.log('关闭个人信息保护指引')
-        text('同意').findOne().click()
-      }
-      // [抖音极速版]关闭新人现金红包弹窗
-      if (id('dsa').exists()) {
-        console.log('关闭新人现金红包')
-        id('dsa').findOne().click()
-      }
-      // [抖音极速版]关闭青少年模式弹窗
-      if (text("我知道了").exists()) {
-        console.log('关闭青少年模式')
-        text('我知道了').findOne().click()
-      }
-      // [抖音极速版]关闭发现通讯录朋友
-      if (text("发现通讯录朋友").exists()) {
-        console.log('关闭发现通讯录朋友')
-        text('拒绝').findOne().click()
-      }
-      // [抖音极速版]关闭邀请新朋友得现金
-      if (desc("不感兴趣").exists()) {
-        console.log('关闭邀请新朋友得现金')
-        desc('不感兴趣').findOne().click()
-      }
-      // [抖音极速版]关闭邀请新朋友得现金
-      if (id("close").exists()) {
-        console.log('关闭弹窗')
-        id("close").findOne().click()
-      }
-      // [抖音极速版]移除朋友推荐
-      if (text("移除").exists()) {
-        console.log('移除朋友推荐')
-        text("移除").findOne().click()
-      }
-
-      sleep(2000)
-    }
-  });
-
 });
 
 events.observeKey(); //启用 按键监听
@@ -343,3 +294,150 @@ events.setKeyInterceptionEnabled("volume_down", true); //屏蔽 音量减
 events.onKeyDown("volume_down", function (event) {
   engines.stopAllAndToast();
 })
+
+function start_抖音极速版(timeout) {
+  // 打开app
+  common.openApp('抖音极速版')
+
+  threads.start(function () {
+    text("首页").waitFor();
+    text('首页').findOne().parent().parent().parent().parent().click()
+    text('推荐').findOne().parent().click()
+  })
+
+  // threads.start(function () { // 点击一些需要点击的
+  //     sleep(5000)
+  //     // 红包点击激活
+  //     if (id("progress").exists()) {
+  //       console.log('点击激活')
+  //       id("progress").findOne().parent().parent().parent().parent().parent().click()
+  //     }
+  // })
+
+  threads.start(function () { // 关闭一些无用的弹窗
+    //在新线程执行的代码
+    while (true) {
+      // 关闭个人信息保护指引
+      if (text("同意").exists()) {
+        console.log('关闭个人信息保护指引')
+        text('同意').findOne().click()
+      }
+      // 关闭新人现金红包弹窗
+      if (id('dsa').exists()) {
+        console.log('关闭新人现金红包')
+        id('dsa').findOne().click()
+      }
+      // 关闭青少年模式弹窗
+      if (text("我知道了").exists()) {
+        console.log('关闭青少年模式')
+        text('我知道了').findOne().click()
+      }
+      // 移除朋友推荐（快手的朋友推荐中也存在发现通讯录朋友，因此放在前面先关闭，防止下一步又获取到）
+      if (text("朋友推荐").exists()) {
+        console.log('移除朋友推荐')
+        // id("close").findOne().click()
+        // [快手极速版]
+        // id("close_btn").findOne().click()
+        back() // 后退关闭弹窗
+      }
+      // 关闭发现通讯录朋友
+      if (text("发现通讯录朋友").exists()) {
+        console.log('关闭发现通讯录朋友')
+        text('拒绝').findOne().click()
+      }
+      // 关闭邀请新朋友得现金
+      if (desc("不感兴趣").exists()) {
+        console.log('关闭邀请新朋友得现金')
+        desc('不感兴趣').findOne().click()
+      }
+      // 关闭邀请新朋友得现金
+      if (id("close").exists()) {
+        console.log('关闭弹窗')
+        id("close").findOne().click()
+      }
+      // 移除朋友推荐
+      if (text("移除").exists()) {
+        console.log('移除朋友推荐')
+        text("移除").findOne().click()
+      }
+
+      // [快手极速版]移除新人福利
+      if (textContains("新人福利").exists()) {
+        console.log('移除朋友推荐')
+        back() // 后退关闭弹窗
+      }
+
+      // [百度极速版]
+      if (textContains("很抱歉").exists()) {
+        back() // 后退关闭弹窗
+      }
+
+      sleep(timeout)
+    }
+  });
+}
+function start_快手极速版(timeout) {
+  // 打开app
+  common.openApp('快手极速版')
+
+  threads.start(function () { // 关闭一些无用的弹窗
+    //在新线程执行的代码
+    while (true) {
+      // 关闭朋友推荐
+      if (text("朋友推荐").exists()) {
+        console.log('移除朋友推荐')
+        back() // 后退关闭弹窗
+      }
+
+      // 移除新人福利
+      if (textContains("新人福利").exists()) {
+        console.log('移除朋友推荐')
+        back() // 后退关闭弹窗
+      }
+
+      sleep(timeout)
+    }
+  });
+}
+function start_百度极速版(timeout) {
+  // 打开app
+  common.openApp('com.baidu.searchbox.lite')
+
+  threads.start(function () {
+    text("视频").waitFor();
+    text('视频').findOne().parent().parent().parent().click()
+  })
+
+  threads.start(function () { // 关闭一些无用的弹窗
+    //在新线程执行的代码
+    while (true) {
+      // 关闭很抱歉
+      if (textContains("很抱歉").exists()) {
+        back() // 后退关闭弹窗
+      }
+      // 关闭恭喜获得现金打款
+      if (text("恭喜获得现金打款").exists()) {
+        back() // 后退关闭弹窗
+      }
+
+      sleep(timeout)
+    }
+  });
+}
+function start_今日头条极速版() {
+  // 打开app
+  common.openApp('今日头条极速版')
+
+  // threads.start(function () {
+  //   text("发现").waitFor();
+  //   text('发现').findOne().parent().click()
+  //   let list = className("androidx.recyclerview.widget.RecyclerView").scrollable(true).depth(13).findOne()
+  //   let first = list.findOne(className("android.widget.FrameLayout").clickable(true))
+  //   first.click();
+  // })
+}
+
+function start_UC浏览器极速版() {
+  // 打开app
+  common.openApp('UC浏览器极速版')
+}
